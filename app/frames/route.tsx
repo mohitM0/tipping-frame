@@ -12,7 +12,7 @@ const handleRequest = frames(async (ctx) => {
             </div>
         ),
         buttons:[
-            <Button action="post" target={"/tx/success"}>
+            <Button action="tx" target={"/tx"} post_url={"/tx/success"}>
                 Tip
             </Button>
         ]

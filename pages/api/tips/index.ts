@@ -4,21 +4,20 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
-        console.log("above db")
-
         await connectToDatabase();
-        console.log("below db")
+
         if (req.method === 'GET') {
             const tips = await Tip.find({});
             res.status(200).json(tips);
         } else if (req.method === 'POST') {
-            const { recepient, amount } = req.body;
-            if (!recepient || !amount) {
+            const { recipientAddress, senderAddress, amount } = req.body;
+            if (!recipientAddress || !senderAddress || !amount) {
                 return res.status(400).json({ error: 'Invalid input' });
             }
 
             const tip = new Tip({
-                recepient,
+                recipientAddress,
+                senderAddress,
                 amount
             });
             await tip.save();
