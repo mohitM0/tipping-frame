@@ -6,8 +6,7 @@ interface TipDocument extends Document {
     description: string;
     recipientAddress: string;
     senderAddress: string;
-    amount: string;
-    isActive: boolean;
+    tokens: string;
 }
 
 const TipSchema: Schema = new Schema({
@@ -15,8 +14,7 @@ const TipSchema: Schema = new Schema({
     description: { type: String, required: true },
     recipientAddress: { type: String, required: true },
     senderAddress: { type: String, required: true },
-    amount: { type: String, required: true },
-    isActive: { type: Boolean, required: true }
+    tokens: { type: String, required: true },
 }, { timestamps: true });
 
 const Tip: Model<TipDocument> = mongoose.models.Tip || mongoose.model<TipDocument>('Tip', TipSchema);

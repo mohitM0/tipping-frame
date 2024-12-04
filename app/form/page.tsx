@@ -1,9 +1,10 @@
 "use client";
 import { useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function TipForm() {
+  const [title, setTitle ] = useState("");
+  const [description, setDescription ] = useState("");
   const [tokens, setTokens] = useState("");
   const [recipientAddress, setRecipientAddress] = useState("");
   const [senderAddress, setSenderAddress] = useState("");
@@ -13,31 +14,22 @@ export default function TipForm() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const recipientAddress = formData.get("recipientAddress")?.toString();
-    const senderAddress = formData.get("senderAddress")?.toString();
-    const amount = formData.get("tokens")
 
-    if (!recipientAddress || !senderAddress || !amount) {
-      setErrorMessage("A Recipient Address, Sender Address and Amout is required");
-      toast.error("All fields are required!", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-      });
+    console.log(title + " " + description + " " + recipientAddress + " " + senderAddress + " " + tokens)
+    if ( !title || !description || !recipientAddress || !senderAddress || !tokens) {
+      setErrorMessage("A Title, Description, Recipient Address, Sender Address and an Amount is required");
+      console.log("error")
       return;
     }
+    console.log("Inside submit")
 
     try {
       console.log("submitting Tip data:", {
+        title,
+        description,
         recipientAddress,
         senderAddress,
-        amount
+        tokens
       })
       const response = await fetch("/api/tips", {
         method: "POST",
@@ -45,9 +37,11 @@ export default function TipForm() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          title,
+          description,
           recipientAddress,
           senderAddress,
-          amount
+          tokens
         })
       });
 
@@ -56,6 +50,7 @@ export default function TipForm() {
       }
 
       const data = await response.json();
+      console.log(data);
       const tipId = data._id;
       const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL;
       const tippingUrl = `${baseUrl}/frames?tipId=${tipId}`;
@@ -65,6 +60,11 @@ export default function TipForm() {
           type: "newFrame", data: { tippingUrl },
         }, "*"
       );
+      setTitle("");
+      setDescription("")
+      setRecipientAddress("")
+      setSenderAddress("")
+      setTokens("")
       setTipResponse({ ...data, tippingUrl })
       setErrorMessage(null);
       console.log("Tip created successfully:", data);
@@ -85,6 +85,34 @@ export default function TipForm() {
       <div className="bg-white text-black w-full max-w-md p-6 rounded-lg shadow-lg">
         <h1 className="text-2xl font-bold text-center mb-6">Tip Tokens</h1>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <div>
+            <label htmlFor="title" className="block text-sm font-medium mb-2">
+              Title
+            </label>
+            <input
+              id="title"
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+              placeholder="Enter Title"
+              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500"
+            />
+          </div>
+          <div>
+            <label htmlFor="description" className="block text-sm font-medium mb-2">
+              Description
+            </label>
+            <input
+              id="description"
+              type="text"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              required
+              placeholder="Enter Description"
+              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500"
+            />
+          </div>
           <div>
             <label htmlFor="recipientAddress" className="block text-sm font-medium mb-2">
               Recipient Address

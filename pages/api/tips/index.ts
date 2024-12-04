@@ -10,15 +10,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const tips = await Tip.find({});
             res.status(200).json(tips);
         } else if (req.method === 'POST') {
-            const { recipientAddress, senderAddress, amount } = req.body;
-            if (!recipientAddress || !senderAddress || !amount) {
+            const { title, description, recipientAddress, senderAddress, tokens } = req.body;
+            if (!title || !description || !recipientAddress || !senderAddress || !tokens) {
                 return res.status(400).json({ error: 'Invalid input' });
             }
 
             const tip = new Tip({
+                title,
+                description,
                 recipientAddress,
                 senderAddress,
-                amount
+                tokens
             });
             await tip.save();
             res.status(201).json(tip);

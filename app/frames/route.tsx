@@ -4,6 +4,7 @@ import { frames } from "./frames";
 const handleRequest = frames(async (ctx) => {
 
     const { tipTo } = ctx.searchParams;
+    
     return {
         image: (
             <div tw="bg-yellow-800 text-white w-full h-full flex flex-col justify-center items-center p-4">
