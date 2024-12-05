@@ -1,22 +1,71 @@
 "use client";
+import { config } from "@/lib/config";
+import { contractAbi, contractAddress } from "@/lib/contracts/contractConfig";
+import { useWeb3Modal } from "@web3modal/wagmi/react";
+import { Button } from "frames.js/next";
 import { useState } from "react";
 import "react-toastify/dist/ReactToastify.css";
+import { useAccount } from "wagmi";
+import { waitForTransactionReceipt, writeContract } from "wagmi/actions";
+
+
+async function createTip(_title: string, _description: string, _recipientAddress: string, _maxAmount: string) {
+  try {
+    const hash = await writeContract(config, {
+      abi: contractAbi,
+      address: contractAddress,
+      functionName: 'createNewTip',
+      args: [_title, _description, _recipientAddress, parseInt(_maxAmount, 10)]
+    });
+
+    console.log(hash);
+    //wait for 5 tranasaction confirmation
+    const receipt = await waitForTransactionReceipt(config, {
+      hash,
+      confirmations: 5,
+    });
+    console.log(receipt);
+
+    if (receipt.status === "success") {
+      return {
+        status: "success",
+        message: "New Tip Created",
+        explorerHash: hash,
+      };
+    } else {
+      return {
+        status: "reverted",
+        message: "Error in creating new tip. Please try again later.",
+      };
+    }
+  } catch (error) {
+    console.log(error);
+    return {
+      status: "Error",
+      message: "Error in creating new tip. Please try again later after some time.",
+    };
+  }
+
+}
 
 export default function TipForm() {
-  const [title, setTitle ] = useState("");
-  const [description, setDescription ] = useState("");
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [tokens, setTokens] = useState("");
   const [recipientAddress, setRecipientAddress] = useState("");
   const [senderAddress, setSenderAddress] = useState("");
   const [tipResponse, setTipResponse] = useState(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const { address, isConnected, chain } = useAccount();
+  const { open  } = useWeb3Modal();
+
+  console.log(isConnected)
 
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    console.log(title + " " + description + " " + recipientAddress + " " + senderAddress + " " + tokens)
-    if ( !title || !description || !recipientAddress || !senderAddress || !tokens) {
+    if (!title || !description || !recipientAddress || !senderAddress || !tokens) {
       setErrorMessage("A Title, Description, Recipient Address, Sender Address and an Amount is required");
       console.log("error")
       return;
@@ -55,6 +104,7 @@ export default function TipForm() {
       const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL;
       const tippingUrl = `${baseUrl}/frames?tipId=${tipId}`;
 
+      await createTip(title, description, recipientAddress, tokens);
       window.parent.postMessage(
         {
           type: "newFrame", data: { tippingUrl },
@@ -68,6 +118,7 @@ export default function TipForm() {
       setTipResponse({ ...data, tippingUrl })
       setErrorMessage(null);
       console.log("Tip created successfully:", data);
+
 
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -85,7 +136,7 @@ export default function TipForm() {
       <div className="bg-white text-black w-full max-w-md p-6 rounded-lg shadow-lg">
         <h1 className="text-2xl font-bold text-center mb-6">Tip Tokens</h1>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <div>
+          <div>
             <label htmlFor="title" className="block text-sm font-medium mb-2">
               Title
             </label>
@@ -158,12 +209,17 @@ export default function TipForm() {
             />
           </div>
 
-          <button
+          { !isConnected ? <button
+            className="w-full py-2 bg-yellow-500 text-white font-bold rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-700"
+            onClick={() => open()}>
+            Connect Wallet
+          </button> : <button
             type="submit"
             className="w-full py-2 bg-yellow-500 text-white font-bold rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-700"
           >
             Tip Tokens
           </button>
+          }
         </form>
       </div>
     </div>
