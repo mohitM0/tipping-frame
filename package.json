@@ -9,17 +9,20 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@wagmi/core": "^2.12.2",
+    "@reown/appkit": "^1.5.3",
+    "@reown/appkit-adapter-wagmi": "^1.5.3",
+    "@tanstack/react-query": "^5.62.2",
+    "@web3modal/wagmi": "^4.2.3",
     "dotenv": "^16.4.5",
     "frames.js": "^0.20.0",
     "mongodb": "^6.11.0",
     "mongoose": "^8.8.3",
-    "next": "15.0.3",
-    "react": "19.0.0-rc-66855b96-20241106",
-    "react-dom": "19.0.0-rc-66855b96-20241106",
+    "next": "^14.2.20",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-toastify": "^10.0.6",
-    "viem": "^2.17.9",
-    "wagmi": "^2.11.3"
+    "viem": "^2.21.54",
+    "wagmi": "^2.13.3"
   },
   "devDependencies": {
     "@types/node": "^20",
