@@ -2,15 +2,15 @@
 
 import React, { ReactNode } from "react";
 import { createWeb3Modal } from "@web3modal/wagmi/react";
-import { Config, State, WagmiProvider } from "wagmi";
-import { projectId, wagmiAdapter } from "../config";
+import { Config } from "wagmi";
+import { config, projectId } from "../config";
 import ContextProvider from "../context";
 
 if (!projectId) throw new Error("Project ID is not defined");
 
 // Create modal
 createWeb3Modal({
-  wagmiConfig: wagmiAdapter.wagmiConfig as Config,
+  wagmiConfig: config as Config,
   projectId,
   themeMode: "dark",
   themeVariables: {

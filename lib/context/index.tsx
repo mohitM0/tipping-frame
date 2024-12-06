@@ -2,11 +2,10 @@
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createAppKit } from '@reown/appkit/react'
-import { mainnet, arbitrum, sepolia, bscTestnet } from '@reown/appkit/networks'
+import { mainnet, sepolia, bscTestnet } from '@reown/appkit/networks'
 import React, { type ReactNode } from 'react'
 import { cookieToInitialState, WagmiProvider, type Config } from 'wagmi'
-import { projectId, wagmiAdapter } from '../config'
-import Web3ModalProvider from '../providers/w3mProviders'
+import { config, projectId, wagmiAdapter } from '../config'
 
 // Set up queryClient
 const queryClient = new QueryClient()
@@ -24,10 +23,10 @@ const metadata = {
 }
 
 // Create the modal
-const modal = createAppKit({
+createAppKit({
   adapters: [wagmiAdapter],
   projectId,
-  networks: [mainnet, arbitrum, sepolia, bscTestnet],
+  networks: [mainnet, sepolia, bscTestnet],
   defaultNetwork: bscTestnet,
   metadata: metadata,
   features: {
@@ -36,10 +35,10 @@ const modal = createAppKit({
 })
 
 function ContextProvider({ children, cookies }: { children: ReactNode; cookies: string | null }) {
-  const initialState = cookieToInitialState(wagmiAdapter.wagmiConfig as Config, cookies)
+  const initialState = cookieToInitialState(config as Config, cookies)
 
   return (
-      <WagmiProvider config={wagmiAdapter.wagmiConfig as Config} initialState={initialState}>
+      <WagmiProvider config={config as Config} initialState={initialState}>
         <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
       </WagmiProvider>
   )
