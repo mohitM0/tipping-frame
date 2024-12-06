@@ -9,13 +9,13 @@ import { useAccount } from "wagmi";
 import { waitForTransactionReceipt, writeContract } from "wagmi/actions";
 
 
-async function createTip(_title: string, _description: string, _recipientAddress: string, _maxAmount: string) {
+async function createTip(_tipId: string, _title: string, _description: string, _recipientAddress: string, _maxAmount: string) {
   try {
     const hash = await writeContract(config, {
       abi: contractAbi,
       address: contractAddress,
       functionName: 'createNewTip',
-      args: [_title, _description, _recipientAddress, parseInt(_maxAmount, 10)]
+      args: [_tipId, _title, _description, _recipientAddress, parseInt(_maxAmount, 10)]
     });
 
     console.log(hash);
@@ -59,9 +59,6 @@ export default function TipForm() {
   const { address, isConnected, chain } = useAccount();
   const { open  } = useWeb3Modal();
 
-  console.log(isConnected)
-
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -99,12 +96,11 @@ export default function TipForm() {
       }
 
       const data = await response.json();
-      console.log(data);
       const tipId = data._id;
       const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL;
       const tippingUrl = `${baseUrl}/frames?tipId=${tipId}`;
 
-      await createTip(title, description, recipientAddress, tokens);
+      await createTip(tipId, title, description, recipientAddress, tokens);
       window.parent.postMessage(
         {
           type: "newFrame", data: { tippingUrl },
