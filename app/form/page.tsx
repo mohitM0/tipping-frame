@@ -2,7 +2,6 @@
 import { config } from "@/lib/config";
 import { contractAbi, contractAddress } from "@/lib/contracts/contractConfig";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
-import { Button } from "frames.js/next";
 import { useState } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import { useAccount } from "wagmi";
@@ -54,17 +53,13 @@ export default function TipForm() {
   const [tokens, setTokens] = useState("");
   const [recipientAddress, setRecipientAddress] = useState("");
   const [senderAddress, setSenderAddress] = useState("");
-  const [tipResponse, setTipResponse] = useState(null)
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const { address, isConnected, chain } = useAccount();
-  const { open  } = useWeb3Modal();
+  const { isConnected } = useAccount();
+  const { open } = useWeb3Modal();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!title || !description || !recipientAddress || !senderAddress || !tokens) {
-      setErrorMessage("A Title, Description, Recipient Address, Sender Address and an Amount is required");
-      console.log("error")
       return;
     }
     console.log("Inside submit")
@@ -100,29 +95,35 @@ export default function TipForm() {
       const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL;
       const tippingUrl = `${baseUrl}/frames?tipId=${tipId}`;
 
-      await createTip(tipId, title, description, recipientAddress, tokens);
+      const result = await createTip(tipId, title, description, recipientAddress, tokens);
+
+      if (result.status !== "success") {
+        console.error("Tip creation failed on-chain. Deleting the tip...");
+        await fetch(`/api/tips?id=${tipId}`, {
+          method: "DELETE",
+        });
+        throw new Error(result.message || "On-chain tip creation failed.");
+      }
+
       window.parent.postMessage(
         {
           type: "newFrame", data: { tippingUrl },
         }, "*"
       );
+
       setTitle("");
       setDescription("")
       setRecipientAddress("")
       setSenderAddress("")
       setTokens("")
-      setTipResponse({ ...data, tippingUrl })
-      setErrorMessage(null);
+    
       console.log("Tip created successfully:", data);
-
 
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error("Error creating Tip:", error);
-        setErrorMessage(error.message);
       } else {
         console.error("Unknown error:", error);
-        setErrorMessage("An unexpected error occurred.");
       }
     }
   };
