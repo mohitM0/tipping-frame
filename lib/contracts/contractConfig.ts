@@ -1,9 +1,14 @@
 import { Address, Abi } from 'viem';
 
-export const contractAddress: Address = '0x2Bb62B892f95B5e29be6EA54AdA65d46684A7A88';
+export const contractAddress: Address = '0x48146624054f7F5b23c8DC0dAEB135F59eC52a33';
 export const contractAbi: Abi = [
 	{
 		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_tipId",
+				"type": "string"
+			},
 			{
 				"internalType": "string",
 				"name": "_title",
@@ -33,9 +38,9 @@ export const contractAbi: Abi = [
 	{
 		"inputs": [
 			{
-				"internalType": "uint256",
+				"internalType": "string",
 				"name": "_tipId",
-				"type": "uint256"
+				"type": "string"
 			}
 		],
 		"name": "giveTip",
@@ -48,9 +53,9 @@ export const contractAbi: Abi = [
 		"inputs": [
 			{
 				"indexed": true,
-				"internalType": "uint256",
+				"internalType": "string",
 				"name": "tipId",
-				"type": "uint256"
+				"type": "string"
 			},
 			{
 				"indexed": true,
@@ -79,9 +84,9 @@ export const contractAbi: Abi = [
 		"inputs": [
 			{
 				"indexed": false,
-				"internalType": "uint256",
+				"internalType": "string",
 				"name": "id",
-				"type": "uint256"
+				"type": "string"
 			},
 			{
 				"indexed": true,
@@ -122,9 +127,9 @@ export const contractAbi: Abi = [
 		"inputs": [
 			{
 				"indexed": true,
-				"internalType": "uint256",
+				"internalType": "string",
 				"name": "tipId",
-				"type": "uint256"
+				"type": "string"
 			},
 			{
 				"indexed": false,
@@ -139,9 +144,9 @@ export const contractAbi: Abi = [
 	{
 		"inputs": [
 			{
-				"internalType": "uint256",
+				"internalType": "string",
 				"name": "_tipId",
-				"type": "uint256"
+				"type": "string"
 			}
 		],
 		"name": "withdrawFunds",
@@ -152,9 +157,9 @@ export const contractAbi: Abi = [
 	{
 		"inputs": [
 			{
-				"internalType": "uint256",
+				"internalType": "string",
 				"name": "_id",
-				"type": "uint256"
+				"type": "string"
 			}
 		],
 		"name": "getTip",
@@ -162,9 +167,9 @@ export const contractAbi: Abi = [
 			{
 				"components": [
 					{
-						"internalType": "uint256",
+						"internalType": "string",
 						"name": "id",
-						"type": "uint256"
+						"type": "string"
 					},
 					{
 						"internalType": "address",
@@ -213,9 +218,9 @@ export const contractAbi: Abi = [
 	{
 		"inputs": [
 			{
-				"internalType": "uint256",
+				"internalType": "string",
 				"name": "_tipId",
-				"type": "uint256"
+				"type": "string"
 			}
 		],
 		"name": "getTipPayments",
@@ -223,9 +228,9 @@ export const contractAbi: Abi = [
 			{
 				"components": [
 					{
-						"internalType": "uint256",
+						"internalType": "string",
 						"name": "tipId",
-						"type": "uint256"
+						"type": "string"
 					},
 					{
 						"internalType": "address",
@@ -254,9 +259,9 @@ export const contractAbi: Abi = [
 	{
 		"inputs": [
 			{
-				"internalType": "uint256",
+				"internalType": "string",
 				"name": "_tipId",
-				"type": "uint256"
+				"type": "string"
 			}
 		],
 		"name": "getTipTotalAmount",
@@ -277,9 +282,9 @@ export const contractAbi: Abi = [
 			{
 				"components": [
 					{
-						"internalType": "uint256",
+						"internalType": "string",
 						"name": "id",
-						"type": "uint256"
+						"type": "string"
 					},
 					{
 						"internalType": "address",
