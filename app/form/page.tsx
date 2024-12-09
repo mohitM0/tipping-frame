@@ -93,7 +93,7 @@ export default function TipForm() {
       const data = await response.json();
       const tipId = data._id;
       const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL;
-      const tippingUrl = `${baseUrl}/frames?tipId=${tipId}`;
+      const tippingUrl = `https://${baseUrl}/frames?tipId=${tipId}`;
 
       const result = await createTip(tipId, title, description, recipientAddress, tokens);
 
