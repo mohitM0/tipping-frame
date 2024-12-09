@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@particle-network/connectkit": "^2.0.8",
     "@wagmi/core": "^2.12.2",
     "@web3modal/wagmi": "^5.0.7",
     "dotenv": "^16.4.5",

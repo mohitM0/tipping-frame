@@ -2,13 +2,14 @@
 import { config } from "@/lib/config";
 import { contractAbi, contractAddress } from "@/lib/contracts/contractConfig";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import { useAccount } from "wagmi";
 import { waitForTransactionReceipt, writeContract } from "wagmi/actions";
 
 
 async function createTip(_tipId: string, _title: string, _description: string, _recipientAddress: string, _maxAmount: string) {
+
   try {
     const hash = await writeContract(config, {
       abi: contractAbi,
@@ -56,8 +57,30 @@ export default function TipForm() {
   const { isConnected } = useAccount();
   const { open } = useWeb3Modal();
 
+  useEffect(() => {
+    window.parent.postMessage({ action: "getWallet" }, "*");
+
+    const handleMessage = (event: MessageEvent) => {
+      if (event.origin !== "http://localhost:3000") return; 
+
+      const { walletAddress } = event.data;
+      if (walletAddress) {
+        console.log(`Received wallet address: ${walletAddress}`);
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
+
+    // Cleanup event listener on component unmount
+    return () => {
+      window.removeEventListener("message", handleMessage);
+    };
+  }, []);
+
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
 
     if (!title || !description || !recipientAddress || !senderAddress || !tokens) {
       return;
@@ -99,7 +122,7 @@ export default function TipForm() {
 
       if (result.status !== "success") {
         console.error("Tip creation failed on-chain. Deleting the tip...");
-        await fetch(`/api/tips?id=${tipId}`, {
+        await fetch(`/api/tips/${tipId}`, {
           method: "DELETE",
         });
         throw new Error(result.message || "On-chain tip creation failed.");
@@ -116,7 +139,7 @@ export default function TipForm() {
       setRecipientAddress("")
       setSenderAddress("")
       setTokens("")
-    
+
       console.log("Tip created successfully:", data);
 
     } catch (error: unknown) {
@@ -205,6 +228,13 @@ export default function TipForm() {
               className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500"
             />
           </div>
+
+          {/* <button
+            type="submit"
+            className="w-full py-2 bg-yellow-500 text-white font-bold rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-700"
+          >
+            Tip Tokens
+          </button> */}
 
           { !isConnected ? <button
             className="w-full py-2 bg-yellow-500 text-white font-bold rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-700"
