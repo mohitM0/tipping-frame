@@ -1,13 +1,12 @@
 import { frames } from "../frames";
-import { config } from "@/lib/config";
 import { contractAbi, contractAddress } from "@/lib/contracts/contractConfig";
 import { transaction } from "frames.js/core";
 import { Abi, Address, encodeFunctionData } from "viem";
 import { bscTestnet } from "viem/chains";
-import { useReadContract } from "wagmi";
 
 
 const handleRequest = frames(async (ctx) => {
+    
     if (!ctx?.message) {
         throw new Error("Invalid frame message");
     }
@@ -26,6 +25,7 @@ const handleRequest = frames(async (ctx) => {
             )
         }
     };
+
     // console.log("result below")
     // try {
     //     const { data: Tip } = useReadContract({
@@ -52,8 +52,7 @@ const handleRequest = frames(async (ctx) => {
         params: {
           abi: contractAbi as Abi,
           to: contractAddress as Address,
-          data: calldata,
-          value: "0", // change this after getting amount from contract
+          data: calldata
         },
       });
 })

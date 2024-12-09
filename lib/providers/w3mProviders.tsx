@@ -2,9 +2,8 @@
 
 import React, { ReactNode } from "react";
 import { createWeb3Modal } from "@web3modal/wagmi/react";
-import { Config } from "wagmi";
+import { Config, State, WagmiProvider } from "wagmi";
 import { config, projectId } from "../config";
-import ContextProvider from "../context";
 
 if (!projectId) throw new Error("Project ID is not defined");
 
@@ -21,14 +20,14 @@ createWeb3Modal({
 
 export default function Web3ModalProvider({
   children,
-  cookies
+  initialState,
 }: {
   children: ReactNode;
-  cookies: string | null
+  initialState?: State;
 }) {
   return (
-    <ContextProvider cookies={cookies}>
-        {children}
-    </ContextProvider>
+    <WagmiProvider config={config} initialState={initialState}>
+      {children}
+    </WagmiProvider>
   );
 }

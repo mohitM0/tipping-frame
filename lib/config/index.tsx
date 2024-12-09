@@ -1,24 +1,36 @@
-import { cookieStorage, createStorage} from '@wagmi/core'
-import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-import { mainnet, bscTestnet, sepolia } from '@reown/appkit/networks'
+import { defaultWagmiConfig } from "@web3modal/wagmi/react/config";
 
-// Get projectId from https://cloud.reown.com
-export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID
+import { cookieStorage, createStorage } from "wagmi";
+import {
+  bscTestnet,
+  mainnet,
+  sepolia} from "wagmi/chains";
 
-if (!projectId) {
-  throw new Error('Project ID is not defined')
-}
+// Get projectId at https://cloud.walletconnect.com
+export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
 
-export const networks = [mainnet, bscTestnet, sepolia ]
+if (!projectId) throw new Error("Project ID is not defined");
 
-//Set up the Wagmi Adapter (Config)
-export const wagmiAdapter = new WagmiAdapter({
-  storage: createStorage({
-    storage: cookieStorage
-  }),
-  ssr: true,
+const metadata = {
+  name: "Tipping Frame",
+  description: "Tipping",
+  url: "https://localhost:3001", // origin must match your domain & subdomain
+  icons: ["https://avatars.githubusercontent.com/u/37784886"],
+};
+
+// Create wagmiConfig
+const chains = [
+  mainnet,
+  sepolia,
+  bscTestnet
+] as const;
+export const config = defaultWagmiConfig({
+  chains,
   projectId,
-  networks
-})
-
-export const config = wagmiAdapter.wagmiConfig
+  metadata,
+  ssr: true,
+  storage: createStorage({
+    storage: cookieStorage,
+  }),
+  //   ...wagmiOptions, // Optional - Override createConfig parameters
+});
