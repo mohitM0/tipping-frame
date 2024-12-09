@@ -5,8 +5,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const createTipFormUrl = new URL(
         "/form",
-        process.env.VERCEL_URL
-            ? `https://${process.env.VERCEL_URL}`
+        process.env.NEXT_PUBLIC_VERCEL_URL
+            ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
             : "http://localhost:3000"
     );
 
@@ -27,8 +27,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 },
                 icon: "poll",
                 name: "Create a Tip",
-                aboutUrl: process.env.VERCEL_URL
-                    ? `https://${process.env.VERCEL_URL}`
+                aboutUrl: process.env.NEXT_PUBLIC_VERCEL_URL
+                    ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
                     : "http://localhost:3000",
                 description: "Create Tips.",
                 imageUrl: "https://framesjs.org/logo.png",
