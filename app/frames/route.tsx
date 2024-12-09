@@ -49,13 +49,13 @@ const handleRequest = frames(async (ctx) => {
         ),
         
         buttons: [
-            <Button action="tx" target={"/txGiveTip"} post_url={"/txGiveTip/success"}>
+            <Button key= "send-tip" action="tx" target={"/txGiveTip"} post_url={"/txGiveTip/success"}>
                 Send Tip
             </Button>,
-            <Button action="post" target={"/txGiveTip"}>
+            <Button key= "click-me" action="post" target={"/txGiveTip"}>
                 click me
             </Button>,
-            <Button action="tx" target={"/txClaimTip"} post_url={"/txClaimTip/success"}>
+            <Button key= "claim-tip" action="tx" target={"/txClaimTip"} post_url={"/txClaimTip/success"}>
                 Claim your Tip
             </Button>
         ],

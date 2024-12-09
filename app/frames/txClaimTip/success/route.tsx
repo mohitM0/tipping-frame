@@ -10,7 +10,7 @@ const handleRequest = frames(async () => {
       </div>
     ),
     buttons: [
-      <Button action="post" target={"/"}>
+      <Button key="back" action="post" target={"/"}>
         Back
       </Button>,
     ],

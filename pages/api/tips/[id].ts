@@ -13,8 +13,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 return res.status(404).json({ error: 'Tip not found' });
             }
             res.status(200).json(tip);
-        } catch (error) {
-            res.status(500).json({ error: 'Internal server error' });
+        } catch{
+            res.status(500).json({ error: 'Failed to fetch the tip! Internal server error' });
         }
     } else if (req.method === 'DELETE') {
         try {
@@ -23,8 +23,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 return res.status(404).json({ error: 'Tip not found' });
             }
             res.status(200).json({ message: 'Tip deleted successfully', deletedTip });
-        } catch (error) {
-            res.status(500).json({ error: 'Internal server error' });
+        } catch{
+            res.status(500).json({ error: 'Failed to delete the tip! Internal server error' });
         }
     } else {
         res.status(405).json({ error: 'Method not allowed' });
