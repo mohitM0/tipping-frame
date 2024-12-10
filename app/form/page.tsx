@@ -60,8 +60,8 @@ export default function TipForm() {
   const [tokens, setTokens] = useState("");
   const [recipientAddress, setRecipientAddress] = useState("");
   const [senderAddress, setSenderAddress] = useState("");
-  const { isConnected } = useAccount();
-  const { open } = useWeb3Modal();
+  // const { isConnected } = useAccount();
+  // const { open } = useWeb3Modal();
 
   // useEffect(() => {
   //   window.parent.postMessage({ action: "getWallet" }, "*");
