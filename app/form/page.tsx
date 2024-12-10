@@ -154,8 +154,8 @@ export default function TipForm() {
 
       const data = await response.json();
       const tipId = data._id;
-      const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL;
-      const tippingUrl = `https://${baseUrl}/frames?tipId=${tipId}`;
+      // const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL;
+      // const tippingUrl = `https://${baseUrl}/frames?tipId=${tipId}`;
 
       // const txDetails = {
       //   address: contractAddress,
@@ -178,7 +178,7 @@ export default function TipForm() {
         abi: contractAbi as Abi,
         functionName: "createNewTip",
         args: [tipId, title, description, recipientAddress, parseInt(tokens, 10)] as const,
-    });
+      });
 
       const transaction = {
         chainId: `eip155:${bscTestnet.id}`,
@@ -193,15 +193,15 @@ export default function TipForm() {
 
       window.parent.postMessage(
         {
-          type: "wrtieContract", data: { transaction },
+          type: "writeContract", data: transaction,
         }, "*"
       );
 
-      window.parent.postMessage(
-        {
-          type: "newFrame", data: { tippingUrl },
-        }, "*"
-      );
+      // window.parent.postMessage(
+      //   {
+      //     type: "newFrame", data: { tippingUrl },
+      //   }, "*"
+      // );
 
       setTitle("");
       setDescription("")
