@@ -191,6 +191,8 @@ export default function TipForm() {
         },
       };
 
+      console.log(transaction);
+
       window.parent.postMessage(
         {
           type: "writeContract", data: transaction,
