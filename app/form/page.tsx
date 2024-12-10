@@ -2,12 +2,12 @@
 import { contractAbi, contractAddress } from "@/lib/contracts/contractConfig";
 // import { config } from "@/lib/config";
 // import { contractAbi, contractAddress } from "@/lib/contracts/contractConfig";
-import { useWeb3Modal } from "@web3modal/wagmi/react";
+// import { useWeb3Modal } from "@web3modal/wagmi/react";
 import { useState } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import { Abi, Address, encodeFunctionData } from "viem";
 import { bscTestnet } from "viem/chains";
-import { useAccount } from "wagmi";
+// import { useAccount } from "wagmi";
 
 
 // async function createTip( receivedAddress: string, _tipId: string, _title: string, _description: string, _recipientAddress: string, _maxAmount: string) {
