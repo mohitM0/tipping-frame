@@ -1,9 +1,12 @@
 "use client";
+import { contractAbi, contractAddress } from "@/lib/contracts/contractConfig";
 // import { config } from "@/lib/config";
 // import { contractAbi, contractAddress } from "@/lib/contracts/contractConfig";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "react-toastify/dist/ReactToastify.css";
+import { Abi, Address, encodeFunctionData } from "viem";
+import { bscTestnet } from "viem/chains";
 import { useAccount } from "wagmi";
 
 
@@ -11,36 +14,36 @@ import { useAccount } from "wagmi";
 
 //   try {
 
-    // Prepare the contract write configuration
-  // const { writeContract: write, data} = useWriteContract();
+// Prepare the contract write configuration
+// const { writeContract: write, data} = useWriteContract();
 
-    // const hash = await writeContract(config, {
-    //   abi: contractAbi,
-    //   address: contractAddress,
-    //   functionName: 'createNewTip',
-    //   args: [_tipId, _title, _description, _recipientAddress, parseInt(_maxAmount, 10)]
-    // });
+// const hash = await writeContract(config, {
+//   abi: contractAbi,
+//   address: contractAddress,
+//   functionName: 'createNewTip',
+//   args: [_tipId, _title, _description, _recipientAddress, parseInt(_maxAmount, 10)]
+// });
 
-    // console.log(hash);
-    // //wait for 5 tranasaction confirmation
-    // const receipt = await waitForTransactionReceipt(config, {
-    //   hash,
-    //   confirmations: 5,
-    // });
-    // console.log(receipt);
+// console.log(hash);
+// //wait for 5 tranasaction confirmation
+// const receipt = await waitForTransactionReceipt(config, {
+//   hash,
+//   confirmations: 5,
+// });
+// console.log(receipt);
 
-    // if (receipt.status === "success") {
-    //   return {
-    //     status: "success",
-    //     message: "New Tip Created",
-    //     explorerHash: hash,
-    //   };
-    // } else {
-    //   return {
-    //     status: "reverted",
-    //     message: "Error in creating new tip. Please try again later.",
-    //   };
-    // }
+// if (receipt.status === "success") {
+//   return {
+//     status: "success",
+//     message: "New Tip Created",
+//     explorerHash: hash,
+//   };
+// } else {
+//   return {
+//     status: "reverted",
+//     message: "Error in creating new tip. Please try again later.",
+//   };
+// }
 //   } catch (error) {
 //     console.log(error);
 //     return {
@@ -60,31 +63,31 @@ export default function TipForm() {
   const { isConnected } = useAccount();
   const { open } = useWeb3Modal();
 
-  useEffect(() => {
-    window.parent.postMessage({ action: "getWallet" }, "*");
+  // useEffect(() => {
+  //   window.parent.postMessage({ action: "getWallet" }, "*");
 
-    const handleMessage = (event: MessageEvent) => {
-      if (event.origin !== "http://localhost:3000") return; 
+  //   const handleMessage = (event: MessageEvent) => {
+  //     if (event.origin !== "http://localhost:3000") return;
 
-      const { walletClient } = event.data;
-      if (walletClient) {
-        console.log(`Received wallet client: ${walletClient}`);
-      }
-    };
+  //     const { walletClient } = event.data;
+  //     if (walletClient) {
+  //       console.log(`Received wallet client: ${walletClient}`);
+  //     }
+  //   };
 
-    window.addEventListener("message", handleMessage);
+  //   window.addEventListener("message", handleMessage);
 
-    // Cleanup event listener on component unmount
-    return () => {
-      window.removeEventListener("message", handleMessage);
-    };
-  }, []);
+  //   // Cleanup event listener on component unmount
+  //   return () => {
+  //     window.removeEventListener("message", handleMessage);
+  //   };
+  // }, []);
 
 
   // const requestWriteTransaction = async (txDetails: any) => {
   //   return new Promise((resolve, reject) => {
   //     const parentOrigin = "http://localhost:3000/";
-  
+
   //     // Request parent to sign the transaction
   //     window.parent.postMessage(
   //       {
@@ -93,13 +96,13 @@ export default function TipForm() {
   //       },
   //       parentOrigin
   //     );
-  
+
   //     // Listen for the response
   //     const handleMessage = (event: MessageEvent) => {
   //       if (event.origin !== parentOrigin) return;
-  
+
   //       const { action, signedTx, error } = event.data;
-  
+
   //       if (action === "signedTransaction") {
   //         window.removeEventListener("message", handleMessage);
   //         resolve(signedTx);
@@ -108,7 +111,7 @@ export default function TipForm() {
   //         reject(new Error(error));
   //       }
   //     };
-  
+
   //     window.addEventListener("message", handleMessage);
   //   });
   // };
@@ -170,6 +173,29 @@ export default function TipForm() {
       //   });
       //   throw new Error(result.message || "On-chain tip creation failed.");
       // }
+
+      const calldata = encodeFunctionData({
+        abi: contractAbi as Abi,
+        functionName: "createNewTip",
+        args: [tipId, title, description, recipientAddress, parseInt(tokens, 10)] as const,
+    });
+
+      const transaction = {
+        chainId: `eip155:${bscTestnet.id}`,
+        method: "sendTransaction",
+        params: {
+          abi: contractAbi as Abi,
+          to: contractAddress as Address,
+          data: calldata,
+          value: "0",
+        },
+      };
+
+      window.parent.postMessage(
+        {
+          type: "wrtieContract", data: { transaction },
+        }, "*"
+      );
 
       window.parent.postMessage(
         {
@@ -279,7 +305,7 @@ export default function TipForm() {
             Tip Tokens
           </button> */}
 
-          { !isConnected ? <button
+          {!isConnected ? <button
             className="w-full py-2 bg-yellow-500 text-white font-bold rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-700"
             onClick={() => open()}>
             Connect Wallet
