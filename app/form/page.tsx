@@ -1,52 +1,55 @@
 "use client";
-import { config } from "@/lib/config";
-import { contractAbi, contractAddress } from "@/lib/contracts/contractConfig";
+// import { config } from "@/lib/config";
+// import { contractAbi, contractAddress } from "@/lib/contracts/contractConfig";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
 import { useEffect, useState } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import { useAccount } from "wagmi";
-import { waitForTransactionReceipt, writeContract } from "wagmi/actions";
 
 
-async function createTip(_tipId: string, _title: string, _description: string, _recipientAddress: string, _maxAmount: string) {
+// async function createTip( receivedAddress: string, _tipId: string, _title: string, _description: string, _recipientAddress: string, _maxAmount: string) {
 
-  try {
-    const hash = await writeContract(config, {
-      abi: contractAbi,
-      address: contractAddress,
-      functionName: 'createNewTip',
-      args: [_tipId, _title, _description, _recipientAddress, parseInt(_maxAmount, 10)]
-    });
+//   try {
 
-    console.log(hash);
-    //wait for 5 tranasaction confirmation
-    const receipt = await waitForTransactionReceipt(config, {
-      hash,
-      confirmations: 5,
-    });
-    console.log(receipt);
+    // Prepare the contract write configuration
+  // const { writeContract: write, data} = useWriteContract();
 
-    if (receipt.status === "success") {
-      return {
-        status: "success",
-        message: "New Tip Created",
-        explorerHash: hash,
-      };
-    } else {
-      return {
-        status: "reverted",
-        message: "Error in creating new tip. Please try again later.",
-      };
-    }
-  } catch (error) {
-    console.log(error);
-    return {
-      status: "Error",
-      message: "Error in creating new tip. Please try again later after some time.",
-    };
-  }
+    // const hash = await writeContract(config, {
+    //   abi: contractAbi,
+    //   address: contractAddress,
+    //   functionName: 'createNewTip',
+    //   args: [_tipId, _title, _description, _recipientAddress, parseInt(_maxAmount, 10)]
+    // });
 
-}
+    // console.log(hash);
+    // //wait for 5 tranasaction confirmation
+    // const receipt = await waitForTransactionReceipt(config, {
+    //   hash,
+    //   confirmations: 5,
+    // });
+    // console.log(receipt);
+
+    // if (receipt.status === "success") {
+    //   return {
+    //     status: "success",
+    //     message: "New Tip Created",
+    //     explorerHash: hash,
+    //   };
+    // } else {
+    //   return {
+    //     status: "reverted",
+    //     message: "Error in creating new tip. Please try again later.",
+    //   };
+    // }
+//   } catch (error) {
+//     console.log(error);
+//     return {
+//       status: "Error",
+//       message: "Error in creating new tip. Please try again later after some time.",
+//     };
+//   }
+
+// }
 
 export default function TipForm() {
   const [title, setTitle] = useState("");
@@ -63,9 +66,9 @@ export default function TipForm() {
     const handleMessage = (event: MessageEvent) => {
       if (event.origin !== "http://localhost:3000") return; 
 
-      const { walletAddress } = event.data;
-      if (walletAddress) {
-        console.log(`Received wallet address: ${walletAddress}`);
+      const { walletClient } = event.data;
+      if (walletClient) {
+        console.log(`Received wallet client: ${walletClient}`);
       }
     };
 
@@ -76,6 +79,39 @@ export default function TipForm() {
       window.removeEventListener("message", handleMessage);
     };
   }, []);
+
+
+  // const requestWriteTransaction = async (txDetails: any) => {
+  //   return new Promise((resolve, reject) => {
+  //     const parentOrigin = "http://localhost:3000/";
+  
+  //     // Request parent to sign the transaction
+  //     window.parent.postMessage(
+  //       {
+  //         action: "writeTx",
+  //         txDetails,
+  //       },
+  //       parentOrigin
+  //     );
+  
+  //     // Listen for the response
+  //     const handleMessage = (event: MessageEvent) => {
+  //       if (event.origin !== parentOrigin) return;
+  
+  //       const { action, signedTx, error } = event.data;
+  
+  //       if (action === "signedTransaction") {
+  //         window.removeEventListener("message", handleMessage);
+  //         resolve(signedTx);
+  //       } else if (action === "signedTransactionError") {
+  //         window.removeEventListener("message", handleMessage);
+  //         reject(new Error(error));
+  //       }
+  //     };
+  
+  //     window.addEventListener("message", handleMessage);
+  //   });
+  // };
 
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -118,15 +154,22 @@ export default function TipForm() {
       const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL;
       const tippingUrl = `https://${baseUrl}/frames?tipId=${tipId}`;
 
-      const result = await createTip(tipId, title, description, recipientAddress, tokens);
+      // const txDetails = {
+      //   address: contractAddress,
+      //   abi: contractAbi,
+      //   functionName: 'createNewTip',
+      //   args: [tipId, title, description, recipientAddress, parseInt(tokens, 10)]
+      // }
 
-      if (result.status !== "success") {
-        console.error("Tip creation failed on-chain. Deleting the tip...");
-        await fetch(`/api/tips/${tipId}`, {
-          method: "DELETE",
-        });
-        throw new Error(result.message || "On-chain tip creation failed.");
-      }
+      // const result = await requestWriteTransaction(txDetails);
+
+      // if (result.status !== "success") {
+      //   console.error("Tip creation failed on-chain. Deleting the tip...");
+      //   await fetch(`/api/tips/${tipId}`, {
+      //     method: "DELETE",
+      //   });
+      //   throw new Error(result.message || "On-chain tip creation failed.");
+      // }
 
       window.parent.postMessage(
         {
