@@ -298,14 +298,14 @@ export default function TipForm() {
             />
           </div>
 
-          {/* <button
+          <button
             type="submit"
             className="w-full py-2 bg-yellow-500 text-white font-bold rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-700"
           >
             Tip Tokens
-          </button> */}
+          </button>
 
-          {!isConnected ? <button
+          {/* {!isConnected ? <button
             className="w-full py-2 bg-yellow-500 text-white font-bold rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-700"
             onClick={() => open()}>
             Connect Wallet
@@ -315,7 +315,7 @@ export default function TipForm() {
           >
             Tip Tokens
           </button>
-          }
+          } */}
         </form>
       </div>
     </div>
