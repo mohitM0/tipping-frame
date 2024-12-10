@@ -195,7 +195,7 @@ export default function TipForm() {
 
       window.parent.postMessage(
         {
-          type: "writeContract", data: transaction,
+          type: "writeContract", data: {transaction},
         }, "*"
       );
 
