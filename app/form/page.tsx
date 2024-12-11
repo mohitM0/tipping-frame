@@ -5,7 +5,7 @@ import { contractAbi, contractAddress } from "@/lib/contracts/contractConfig";
 // import { useWeb3Modal } from "@web3modal/wagmi/react";
 import { useState } from "react";
 import "react-toastify/dist/ReactToastify.css";
-import { Abi, Address, encodeFunctionData } from "viem";
+import { Abi, Address } from "viem";
 import { bscTestnet } from "viem/chains";
 // import { useAccount } from "wagmi";
 
@@ -174,11 +174,11 @@ export default function TipForm() {
       //   throw new Error(result.message || "On-chain tip creation failed.");
       // }
 
-      const calldata = encodeFunctionData({
-        abi: contractAbi as Abi,
-        functionName: "createNewTip",
-        args: [tipId, title, description, recipientAddress, parseInt(tokens, 10)] as const,
-      });
+      // const calldata = encodeFunctionData({
+      //   abi: contractAbi as Abi,
+      //   functionName: "createNewTip",
+      //   args: [tipId, title, description, recipientAddress, parseInt(tokens, 10)] as const,
+      // });
 
       const transaction = {
         chainId: `eip155:${bscTestnet.id}`,
@@ -186,8 +186,7 @@ export default function TipForm() {
         params: {
           abi: contractAbi as Abi,
           to: contractAddress as Address,
-          data: calldata,
-          value: "0",
+          args: [tipId, title, description, recipientAddress, parseInt(tokens, 10)] as const,
         },
       };
 
