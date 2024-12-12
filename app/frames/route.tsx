@@ -3,7 +3,9 @@ import { frames } from "./frames";
 
 const handleRequest = frames(async (ctx) => {
 
+    console.log("I am here");
     const { tipId } = ctx.searchParams;
+    console.log(tipId);
 
     if (!tipId) {
         return {
@@ -14,8 +16,11 @@ const handleRequest = frames(async (ctx) => {
             ),
         }
     }
+    console.log("I was here 3")
 
-    const response = await fetch(`/api/${tipId}`, {
+    const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL;
+
+    const response = await fetch(`https://${baseUrl}/api/tips/${tipId}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
