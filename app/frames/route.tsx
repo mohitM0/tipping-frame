@@ -5,7 +5,7 @@ const handleRequest = frames(async (ctx) => {
 
     const { tipId } = ctx.searchParams;
 
-    if(!tipId){
+    if (!tipId) {
         return {
             image: (
                 <div tw="bg-yellow-800 text-white w-full h-full flex flex-col justify-center items-center p-4">
@@ -27,7 +27,7 @@ const handleRequest = frames(async (ctx) => {
     }
 
     const data = await response.json();
-    if(!data){
+    if (!data) {
         return {
             image: (
                 <div tw="bg-yellow-800 text-white w-full h-full flex flex-col justify-center items-center p-4">
@@ -47,15 +47,15 @@ const handleRequest = frames(async (ctx) => {
                 <p tw="text-3xl text-center mt-4">Tipping amount {tokens} </p>
             </div>
         ),
-        
+
         buttons: [
-            <Button key= "send-tip" action="tx" target={"/txGiveTip"} post_url={"/txGiveTip/success"}>
+            <Button key="send-tip" action="tx" target={"/txGiveTip"} post_url={"/txGiveTip/success"}>
                 Send Tip
             </Button>,
-            <Button key= "click-me" action="post" target={"/txGiveTip"}>
+            <Button key="click-me" action="post" target={"/txGiveTip"}>
                 click me
             </Button>,
-            <Button key= "claim-tip" action="tx" target={"/txClaimTip"} post_url={"/txClaimTip/success"}>
+            <Button key="claim-tip" action="tx" target={"/txClaimTip"} post_url={"/txClaimTip/success"}>
                 Claim your Tip
             </Button>
         ],
